@@ -1,3 +1,3 @@
-from .few_shot_experiment import FewShotExperiment, FewShotWithRepetitionExperiment
+from .few_shot_experiment import FewShotExperiment, FewShotWithNaiveRepetitionExperiment
 
-__all__ = ["FewShotExperiment", "FewShotWithRepetitionExperiment"]
+__all__ = ["FewShotExperiment", "FewShotWithNaiveRepetitionExperiment"]

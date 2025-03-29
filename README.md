@@ -29,10 +29,11 @@ ollama pull gemma3:27b
 ```bash
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:1b
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:4b
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:12b
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:27b
+# uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:12b
+# uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:27b
 uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:1b --num-iterations 3
-uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:4b --num-iterations 3
+uv run run_experiments.py --experiment_name few-shot --model_name gemma3:1b
+
 ```
 
 4. Run evaluation

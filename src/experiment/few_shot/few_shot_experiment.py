@@ -9,7 +9,6 @@ from src.experiment.zero_shot import (
 class FewShotExperiment(ZeroShotExperiment):
     """Implements few-shot approach for MBPP experiment."""
 
-    @staticmethod
     def create_task_prompt(self, example: Dict) -> str:
         """Create the prompt from the example data."""
         few_shot_prompt = "You are an expert Python programmer and your goal is to solve the programming tasks.\n"
