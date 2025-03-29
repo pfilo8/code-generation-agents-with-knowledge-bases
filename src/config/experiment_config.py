@@ -25,16 +25,17 @@ class ExperimentConfig:
         """Create config from command line arguments."""
         # Convert args to dictionary, excluding None values
         additional_args = {
-            k: v for k, v in vars(args).items() 
-            if k not in ['data_path', 'model_name', 'experiment_name', 'output_dir'] 
+            k: v
+            for k, v in vars(args).items()
+            if k not in ["data_path", "model_name", "experiment_name", "output_dir"]
             and v is not None
         }
-        
+
         return cls(
             data_path=args.data_path,
             model_name=args.model_name,
             experiment_name=args.experiment_name,
             output_dir=args.output_dir,
-            test_range=cls.FEW_SHOT_RANGE,
+            test_range=cls.TEST_RANGE,
             experiment_additional_arguments=additional_args,
         )

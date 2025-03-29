@@ -1,7 +1,5 @@
 import argparse
 
-from src.cli.common_arguments import create_parser, add_common_arguments
-
 
 def parse_experiment_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
@@ -22,7 +20,12 @@ def parse_experiment_arguments() -> argparse.Namespace:
         "-e",
         type=str,
         default="zero-shot",
-        choices=["zero-shot", "zero-shot-repeat"],
+        choices=[
+            "zero-shot",
+            "zero-shot-naive-repeat",
+            "few-shot",
+            "few-shot-naive-repeat",
+        ],
         help="Experiment type to run (default: zero-shot)",
     )
 

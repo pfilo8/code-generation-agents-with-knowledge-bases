@@ -4,13 +4,15 @@ from src.config.experiment_config import ExperimentConfig
 from src.experiment.base_experiment import BaseExperiment
 from src.experiment.zero_shot.zero_shot_experiment import (
     ZeroShotExperiment,
-    ZeroShotWithRepetitionExperiment,
+    ZeroShotWithNaiveRepetitionExperiment,
 )
 from src.experiment.few_shot.few_shot_experiment import (
     FewShotExperiment,
-    FewShotWithRepetitionExperiment,
+    FewShotWithNaiveRepetitionExperiment,
 )
-from src.experiment.knowledge_base.knowledge_base_experiment import KnowledgeBaseExperiment
+from src.experiment.knowledge_base.knowledge_base_experiment import (
+    KnowledgeBaseExperiment,
+)
 
 
 class ExperimentFactory:
@@ -19,9 +21,9 @@ class ExperimentFactory:
     # Registry of available experiment types
     EXPERIMENT_TYPES = {
         "zero-shot": ZeroShotExperiment,
-        "zero-shot-repeat": ZeroShotWithRepetitionExperiment,
+        "zero-shot-naive-repeat": ZeroShotWithNaiveRepetitionExperiment,
         "few-shot": FewShotExperiment,
-        "few-shot-repeat": FewShotWithRepetitionExperiment,
+        "few-shot-naive-repeat": FewShotWithNaiveRepetitionExperiment,
         "knowledge-base": KnowledgeBaseExperiment,
     }
 

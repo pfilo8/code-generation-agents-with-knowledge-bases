@@ -1,3 +1,6 @@
-from .zero_shot_experiment import ZeroShotExperiment, ZeroShotWithRepetitionExperiment
+from .zero_shot_experiment import (
+    ZeroShotExperiment,
+    ZeroShotWithNaiveRepetitionExperiment,
+)
 
-__all__ = ["ZeroShotExperiment", "ZeroShotWithRepetitionExperiment"] 
+__all__ = ["ZeroShotExperiment", "ZeroShotWithNaiveRepetitionExperiment"]

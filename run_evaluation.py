@@ -30,6 +30,7 @@ def process_experiment_results(results_file: pathlib.Path) -> None:
                 "task_id": task["task_id"],
                 "prompt": task["prompt"],
                 "model": task["model"],
+                "experiment_name": task["experiment_name"],
             }
 
             # Evaluate each result until we find a successful one

@@ -2,9 +2,10 @@ import datetime
 from typing import Optional, Dict, List
 
 import ollama
-from smolagents import fix_final_answer_code, parse_code_blobs
+
 
 from src.experiment.base_experiment import BaseExperiment
+from src.experiment.utils import extract_code
 from src.prompts import SYSTEM_PROMPT
 
 
@@ -15,15 +16,17 @@ class ZeroShotExperiment(BaseExperiment):
         """Generate code using the configured model."""
         try:
             response = ollama.generate(
-                model=self.config.model_name, prompt=prompt, system=SYSTEM_PROMPT
+                model=self.config.model_name,
+                prompt=prompt,
+                system=SYSTEM_PROMPT,
+                options={"num_predict": 1000},
             )
             return response["response"]
         except Exception as e:
             self.logger.error(f"Error generating response: {e}")
             return ""
 
-    @staticmethod
-    def create_task_prompt(example: Dict) -> str:
+    def create_task_prompt(self, example: Dict) -> str:
         """Create the prompt from the example data."""
         return (
             example["prompt"]
@@ -41,7 +44,7 @@ class ZeroShotExperiment(BaseExperiment):
         self.logger.info(f"Processing task {task_id}")
         prompt = self.create_task_prompt(example)
         response = self.generate_response(prompt)
-        code_action = fix_final_answer_code(parse_code_blobs(response))
+        code_action = extract_code(response)
 
         return {
             **example,
@@ -49,11 +52,12 @@ class ZeroShotExperiment(BaseExperiment):
                 {"response": response, "code_action": code_action},
             ],
             "model": self.config.model_name,
+            "experiment_name": self.config.experiment_name,
             "timestamp": str(datetime.datetime.now()),
         }
 
 
-class ZeroShotWithRepetitionExperiment(ZeroShotExperiment):
+class ZeroShotWithNaiveRepetitionExperiment(ZeroShotExperiment):
     """Implements zero-shot with repetition approach for MBPP experiment."""
 
     def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:
@@ -63,20 +67,24 @@ class ZeroShotWithRepetitionExperiment(ZeroShotExperiment):
             self.logger.warning(f"No example found for task_id {task_id}")
             return None
 
-        num_iterations = self.config.experiment_additional_arguments.get('num_iterations', 3)
-        
+        num_iterations = self.config.experiment_additional_arguments.get(
+            "num_iterations", 3
+        )
+
         self.logger.info(f"Processing task {task_id} with {num_iterations} iterations")
         results = []
-        
+
         for _ in range(num_iterations):
             prompt = self.create_task_prompt(example)
             response = self.generate_response(prompt)
-            code_action = fix_final_answer_code(parse_code_blobs(response))
+            code_action = extract_code(response)
+
             results.append({"response": response, "code_action": code_action})
 
         return {
             **example,
             "results": results,
             "model": self.config.model_name,
+            "experiment_name": self.config.experiment_name,
             "timestamp": str(datetime.datetime.now()),
         }

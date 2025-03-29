@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod
 import datetime
 import json
 import logging
 import pathlib
-from typing import Optional, Dict, List
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional
 
 from src.config.experiment_config import ExperimentConfig
 
@@ -13,6 +13,7 @@ class BaseExperiment(ABC):
 
     def __init__(self, config: ExperimentConfig):
         self.config = config
+        self.data = self.load_data(self.config.data_path)
         self.results: List[Dict] = []
         self.logger = self._setup_logging()
 
@@ -56,10 +57,9 @@ class BaseExperiment(ABC):
 
     def run(self) -> None:
         """Execute the experiment."""
-        data = self.load_data(self.config.data_path)
 
         for task_id in range(self.config.test_range[0], self.config.test_range[1] + 1):
-            if result := self.process_task(task_id, data):
+            if result := self.process_task(task_id, self.data):
                 self.results.append(result)
 
         self.save_results()
