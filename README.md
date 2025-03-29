@@ -11,6 +11,17 @@ Plan:
 - [ ] Reproduce the benchmark using few-shot approach with loop repetition
 - [ ] Validate the approach using Knowledge Base learning.
 
+## Reproduction
+
+1. Install uv and ollama. See more details here: [uv](https://github.com/astral-sh/uv), [ollama](https://ollama.com/download).
+2. Download Gemma models (27b and 12b).
+
+```bash
+ollama pull gemma3:27b
+ollama pull gemma3:12b
+```
+
+
 ## Dataset
 Based on the Program Synthesis with Large Language Models, Austin et. al., 2021. 
 Paper: [here](https://arxiv.org/pdf/2108.07732)
