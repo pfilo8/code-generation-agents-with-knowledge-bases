@@ -2,7 +2,15 @@ from typing import Type
 
 from src.config.experiment_config import ExperimentConfig
 from src.experiment.base_experiment import BaseExperiment
-from src.experiment.mbpp_experiment import ZeroShotExperiment
+from src.experiment.zero_shot.zero_shot_experiment import (
+    ZeroShotExperiment,
+    ZeroShotWithRepetitionExperiment,
+)
+from src.experiment.few_shot.few_shot_experiment import (
+    FewShotExperiment,
+    FewShotWithRepetitionExperiment,
+)
+from src.experiment.knowledge_base.knowledge_base_experiment import KnowledgeBaseExperiment
 
 
 class ExperimentFactory:
@@ -11,10 +19,10 @@ class ExperimentFactory:
     # Registry of available experiment types
     EXPERIMENT_TYPES = {
         "zero-shot": ZeroShotExperiment,
-        # Add more experiment types as they are implemented
-        # "few-shot": FewShotExperiment,
-        # "few-shot-repeat": FewShotWithRepetitionExperiment,
-        # "knowledge-base": KnowledgeBaseExperiment,
+        "zero-shot-repeat": ZeroShotWithRepetitionExperiment,
+        "few-shot": FewShotExperiment,
+        "few-shot-repeat": FewShotWithRepetitionExperiment,
+        "knowledge-base": KnowledgeBaseExperiment,
     }
 
     @classmethod

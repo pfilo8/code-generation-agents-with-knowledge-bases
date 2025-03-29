@@ -1,15 +1,11 @@
 import datetime
-import json
-import logging
-import pathlib
 from typing import Optional, Dict, List
 
 import ollama
 from smolagents import fix_final_answer_code, parse_code_blobs
 
-from src.config.experiment_config import ExperimentConfig
-from src.prompts import SYSTEM_PROMPT
 from src.experiment.base_experiment import BaseExperiment
+from src.prompts import SYSTEM_PROMPT
 
 
 class ZeroShotExperiment(BaseExperiment):
@@ -52,6 +48,35 @@ class ZeroShotExperiment(BaseExperiment):
             "results": [
                 {"response": response, "code_action": code_action},
             ],
+            "model": self.config.model_name,
+            "timestamp": str(datetime.datetime.now()),
+        }
+
+
+class ZeroShotWithRepetitionExperiment(ZeroShotExperiment):
+    """Implements zero-shot with repetition approach for MBPP experiment."""
+
+    def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:
+        """Process a single MBPP task using zero-shot approach."""
+        example = next((ex for ex in data if ex["task_id"] == task_id), None)
+        if not example:
+            self.logger.warning(f"No example found for task_id {task_id}")
+            return None
+
+        num_iterations = self.config.experiment_additional_arguments.get('num_iterations', 3)
+        
+        self.logger.info(f"Processing task {task_id} with {num_iterations} iterations")
+        results = []
+        
+        for _ in range(num_iterations):
+            prompt = self.create_task_prompt(example)
+            response = self.generate_response(prompt)
+            code_action = fix_final_answer_code(parse_code_blobs(response))
+            results.append({"response": response, "code_action": code_action})
+
+        return {
+            **example,
+            "results": results,
             "model": self.config.model_name,
             "timestamp": str(datetime.datetime.now()),
         }

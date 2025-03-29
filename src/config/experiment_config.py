@@ -18,14 +18,23 @@ class ExperimentConfig:
     experiment_name: str = field(default="zero-shot")
     output_dir: Path = field(default=Path("results"))
     test_range: Tuple[int, int] = FEW_SHOT_RANGE
+    experiment_additional_arguments: dict = field(default_factory=dict)
 
     @classmethod
     def from_args(cls, args: argparse.Namespace) -> "ExperimentConfig":
         """Create config from command line arguments."""
+        # Convert args to dictionary, excluding None values
+        additional_args = {
+            k: v for k, v in vars(args).items() 
+            if k not in ['data_path', 'model_name', 'experiment_name', 'output_dir'] 
+            and v is not None
+        }
+        
         return cls(
             data_path=args.data_path,
             model_name=args.model_name,
             experiment_name=args.experiment_name,
             output_dir=args.output_dir,
             test_range=cls.FEW_SHOT_RANGE,
+            experiment_additional_arguments=additional_args,
         )

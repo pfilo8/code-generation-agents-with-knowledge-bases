@@ -7,6 +7,7 @@ from typing import Optional, Dict, List
 
 from src.config.experiment_config import ExperimentConfig
 
+
 class BaseExperiment(ABC):
     """Base class for MBPP experiments with different processing strategies."""
 
@@ -61,4 +62,4 @@ class BaseExperiment(ABC):
             if result := self.process_task(task_id, data):
                 self.results.append(result)
 
-        self.save_results() 
+        self.save_results()

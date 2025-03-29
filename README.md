@@ -21,6 +21,17 @@ ollama pull gemma3:27b
 ollama pull gemma3:12b
 ```
 
+3. Run experiments
+```bash
+uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:4b
+uv run run_experiments.py --experiment_name zero-shot-repeat --model_name gemma3:4b --num-iterations 2
+```
+
+4. Run evaluation
+
+```bash
+uv run run_evaluation.py --results-path results/...
+```
 
 ## Dataset
 Based on the Program Synthesis with Large Language Models, Austin et. al., 2021. 
