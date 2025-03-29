@@ -22,8 +22,9 @@ def parse_experiment_arguments() -> argparse.Namespace:
         "--experiment_name",
         "-e",
         type=str,
-        default="plain",
-        help="Experiment name for output files (default: plain)",
+        default="zero-shot",
+        choices=["zero-shot"],
+        help="Experiment type to run (default: zero-shot)",
     )
 
     parser.add_argument(

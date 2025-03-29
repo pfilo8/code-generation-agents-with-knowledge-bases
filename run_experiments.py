@@ -1,7 +1,6 @@
-from pathlib import Path
 from src.cli.experiment_arguments import parse_experiment_arguments
 from src.config.experiment_config import ExperimentConfig
-from src.experiment.mbpp_experiment import MBPPExperiment
+from src.experiment.factory import ExperimentFactory
 
 
 def main():
@@ -11,8 +10,8 @@ def main():
     # Create config from command line args
     config = ExperimentConfig.from_args(args)
 
-    # Initialize and run experiment
-    experiment = MBPPExperiment(config)
+    # Create and run appropriate experiment using factory
+    experiment = ExperimentFactory.create_experiment(config)
     experiment.run()
 
 

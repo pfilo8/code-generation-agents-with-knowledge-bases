@@ -15,7 +15,7 @@ class ExperimentConfig:
 
     data_path: Path = field(default=Path("data/sanitized-mbpp.json"))
     model_name: str = field(default="gemma3:4b")
-    experiment_name: str = field(default="plain")
+    experiment_name: str = field(default="zero-shot")
     output_dir: Path = field(default=Path("results"))
     test_range: Tuple[int, int] = FEW_SHOT_RANGE
 
