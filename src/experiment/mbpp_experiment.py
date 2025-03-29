@@ -68,8 +68,9 @@ class MBPPExperiment:
 
         return {
             **example,
-            "response": response,
-            "code_action": code_action,
+            "results": [
+                {"response": response, "code_action": code_action},
+            ],
             "model": self.config.model_name,
             "timestamp": str(datetime.datetime.now()),
         }
