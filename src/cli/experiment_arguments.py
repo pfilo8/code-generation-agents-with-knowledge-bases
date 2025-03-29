@@ -1,14 +1,17 @@
 import argparse
 
+from src.cli.common_arguments import create_parser, add_common_arguments
 
-def parse_arguments() -> argparse.Namespace:
+
+def parse_experiment_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
+    parser = create_parser(
         description="Run MBPP experiments with different models and configurations."
     )
+    parser = add_common_arguments(parser)
 
     parser.add_argument(
-        "--model",
+        "--model_name",
         "-m",
         type=str,
         default="gemma3:4b",
@@ -16,7 +19,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--experiment",
+        "--experiment_name",
         "-e",
         type=str,
         default="plain",
@@ -24,7 +27,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--data",
+        "--data_path",
         "-d",
         type=str,
         default="data/sanitized-mbpp.json",

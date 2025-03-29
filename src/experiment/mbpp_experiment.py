@@ -77,7 +77,7 @@ class MBPPExperiment:
 
     def save_results(self) -> None:
         """Save experiment results to a JSON file."""
-        results_dir = pathlib.Path("results")
+        results_dir = pathlib.Path(self.config.output_dir)
         results_dir.mkdir(exist_ok=True)
 
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -93,9 +93,9 @@ class MBPPExperiment:
         except Exception as e:
             self.logger.error(f"Failed to save results: {e}")
 
-    def run(self, data_path: pathlib.Path) -> None:
+    def run(self) -> None:
         """Execute the experiment."""
-        data = self.load_data(data_path)
+        data = self.load_data(self.config.data_path)
 
         for task_id in range(self.config.test_range[0], self.config.test_range[1] + 1):
             if result := self.process_task(task_id, data):
