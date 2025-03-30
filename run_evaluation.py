@@ -39,9 +39,10 @@ def process_experiment_results(results_file: pathlib.Path) -> None:
             if task["results"]:
                 for result in task["results"]:
                     if result["code_action"]:
-                        if evaluator.evaluate_code(
+                        succes, _, _ = evaluator.evaluate_task(
                             result["code_action"], task["test_list"]
-                        ):
+                        )
+                        if succes:
                             task_result["success"] = True
                             break
 

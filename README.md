@@ -56,13 +56,13 @@ uv pip install .
 # Zero-shot experiments
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:1b
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:4b
-
-# Zero-shot with naive repetition
 uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_name zero-shot-self-improving --model_name gemma3:1b --num-iterations 3
 
 # Few-shot experiments
 uv run run_experiments.py --experiment_name few-shot --model_name gemma3:1b
-uv run run_experiments.py --experiment_name few-shot-naive-repeat --model_name gemma3:1b
+uv run run_experiments.py --experiment_name few-shot-naive-repeat --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_name few-shot-self-improving --model_name gemma3:1b --num-iterations 3
 ```
 
 ### Evaluation

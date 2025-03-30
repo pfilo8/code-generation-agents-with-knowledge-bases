@@ -5,10 +5,12 @@ from src.experiment.base_experiment import BaseExperiment
 from src.experiment.zero_shot.zero_shot_experiment import (
     ZeroShotExperiment,
     ZeroShotWithNaiveRepetitionExperiment,
+    ZeroShotWithSelfImprovingRepetitionExperiment,
 )
 from src.experiment.few_shot.few_shot_experiment import (
     FewShotExperiment,
     FewShotWithNaiveRepetitionExperiment,
+    FewShotWithSelfImprovingRepetitionExperiment,
 )
 from src.experiment.knowledge_base.knowledge_base_experiment import (
     KnowledgeBaseExperiment,
@@ -22,8 +24,10 @@ class ExperimentFactory:
     EXPERIMENT_TYPES = {
         "zero-shot": ZeroShotExperiment,
         "zero-shot-naive-repeat": ZeroShotWithNaiveRepetitionExperiment,
+        "zero-shot-self-improving": ZeroShotWithSelfImprovingRepetitionExperiment,
         "few-shot": FewShotExperiment,
         "few-shot-naive-repeat": FewShotWithNaiveRepetitionExperiment,
+        "few-shot-self-improving": FewShotWithSelfImprovingRepetitionExperiment,
         "knowledge-base": KnowledgeBaseExperiment,
     }
 

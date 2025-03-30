@@ -5,7 +5,10 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Dict, List, Optional
 
+import ollama
+
 from src.config.experiment_config import ExperimentConfig
+from src.prompts import SYSTEM_PROMPT
 
 
 class BaseExperiment(ABC):
@@ -31,6 +34,20 @@ class BaseExperiment(ABC):
         except Exception as e:
             self.logger.error(f"Failed to load data from {filename}: {e}")
             raise
+
+    def generate_response(self, prompt: str) -> str:
+        """Generate code using the configured model."""
+        try:
+            response = ollama.generate(
+                model=self.config.model_name,
+                prompt=prompt,
+                system=SYSTEM_PROMPT,
+                options={"num_predict": 1000},
+            )
+            return response["response"]
+        except Exception as e:
+            self.logger.error(f"Error generating response: {e}")
+            return ""
 
     @abstractmethod
     def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:

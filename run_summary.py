@@ -27,6 +27,9 @@ for file in csv_files:
     # Store results
     model_accuracies[plot_key] = accuracy * 100  # Convert to percentage
 
+# Sort the model_accuracies dictionary by keys (model names)
+model_accuracies = dict(sorted(model_accuracies.items()))
+
 # Create bar plot
 plt.figure(figsize=(14, 7))  # Increased width for longer labels
 plt.bar(

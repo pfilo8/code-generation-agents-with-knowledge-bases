@@ -23,8 +23,10 @@ def parse_experiment_arguments() -> argparse.Namespace:
         choices=[
             "zero-shot",
             "zero-shot-naive-repeat",
+            "zero-shot-self-improving",
             "few-shot",
             "few-shot-naive-repeat",
+            "few-shot-self-improving",
         ],
         help="Experiment type to run (default: zero-shot)",
     )
