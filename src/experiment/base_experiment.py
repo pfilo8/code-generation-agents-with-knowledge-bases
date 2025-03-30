@@ -42,7 +42,7 @@ class BaseExperiment(ABC):
                 model=self.config.model_name,
                 prompt=prompt,
                 system=SYSTEM_PROMPT,
-                options={"num_predict": 1000},
+                options={"num_predict": 1000, "temperature": 0.5},
             )
             return response["response"]
         except Exception as e:

@@ -1,41 +1,86 @@
-# Code Generation Agents with MBPP Benchmark
+# Small Gemma Models for Code Generation
 
-This project explores whether AI Agents equipped with Knowledge Bases created from training datasets can improve code generation quality. We use the Mostly Basic Python Problems (MBPP) benchmark to evaluate different approaches using Gemma3 models.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-## Overview
+## 📋 Overview
 
-The MBPP benchmark consists of approximately 1,000 crowd-sourced Python programming problems designed for entry-level programmers. Each problem includes:
+This research project investigates whether smaller Gemma models (1B, 4B) can achieve code generation capabilities comparable to their larger counterparts (12B, 27B) through various enhancement techniques. We explore:
+
+- Few-shot learning approaches
+- Self-improvement strategies
+- Dual-model architectures
+
+## 🔍 Research Questions
+
+1. What are the baseline zero-shot capabilities across different Gemma model sizes?
+2. How stable are smaller models' results in zero-shot scenarios?
+3. What improvements can be achieved through few-shot approaches?
+4. How does the number of examples in few-shot learning influence results?
+5. How do example selection strategies impact few-shot learning outcomes?
+6. Can self-improvement techniques enhance zero-shot or few-shot performance?
+
+## 🧪 Methodology
+
+### Dataset
+
+We utilize a hand-verified subset of the [Mostly Basic Python Problems (MBPP)](https://github.com/google-research/google-research/tree/master/mbpp) benchmark. The original MBPP dataset includes 1,000 Python programming problems for entry-level programmers, each containing:
 - Task description
-- Code solution
-- 3 automated test cases
+- Reference solution
+- 3 test cases for validation
+Moreover, for the purpose of this repository we use 50 test examples due to computational budget limitations.
 
-## Project Goals
+### Experimental Approaches
 
-We aim to reproduce and improve upon the benchmarks using various approaches:
+1. **Zero-shot baseline**: Direct code generation without examples
+2. **Naive repetition**: Multiple generation attempts
+3. **Self-improvement**: Iterative refinement using feedback from execution errors
+4. **Dual-model approach**: Separate models for code and feedback generation
 
-- [x] Code generation using Gemma3 models
-- [x] Safe environment code execution
-- [ ] Zero-shot approaches:
-  - [x] Basic zero-shot
-  - [x] Zero-shot with naive repetition
-  - [ ] Zero-shot with smart repetition
-- [ ] Few-shot approaches:
-  - [x] Basic few-shot
-  - [x] Few-shot with repetition
-  - Few-shot with loop repetition
-- [ ] RAG-based approaches
-- [ ] Knowledge Base learning validation
+All experiments run locally on Apple Silicon M4 Pro processors for reproducibility.
 
-## Getting Started
+## 📊 Key Findings
+
+### Q1: Zero-Shot Capabilities Across Model Sizes
+
+For our evaluation, we generated one code sample per problem with temperature set to $0.5$ and assessed whether it passed all three provided test cases.
+
+![Zero-shot baseline performance](figures/Q1_baselines.png)
+
+Model performance gradually improves with parameter count, starting from 63.3% for the 1B model and reaching 90% for the 27B model.
+
+### Q2: Results Stability in Zero-Shot Scenarios
+
+We evaluated result stability by generating 5 different responses for each query and tracking accumulated accuracy across iterations.
+
+![Zero-shot stability analysis](figures/Q2_stability.png)
+
+Our analysis shows that results stabilize after 2-3 iterations, informing our experimental design choices. For subsequent experiments, we standardized on 3 iterations to ensure result comparability.
+
+### Q3: Few-Shot Approach Improvements
+Note: This section will be populated with results from the few-shot experiments currently in progress.
+
+### Q4: Impact of Example Count in Few-Shot Learning
+Note: This section will be populated with results analyzing how the number of examples affects few-shot performance.
+
+### Q5: Example Selection Strategies
+Note: This section will be populated with results comparing different strategies for selecting few-shot examples.
+
+### Q6: Self-Improvement Techniques
+We implemented several self-improvement approaches:
+
+- Zero-shot self-improvement: The model iteratively refines its own code based on feedback
+- Dual-model self-improvement: Separate models handle generation and analysis roles
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- [uv](https://github.com/astral-sh/uv) - Python package installer and resolver
-- [ollama](https://ollama.com/download) - Local large language model runner
+- [uv](https://github.com/astral-sh/uv) - Modern Python package installer
+- [ollama](https://ollama.com/download) - Local LLM runner
 
 ### Installation
 
-1. Download required Gemma models:
+1. Download Gemma models:
 ```bash
 ollama pull gemma3:1b
 ollama pull gemma3:4b
@@ -43,59 +88,54 @@ ollama pull gemma3:12b
 ollama pull gemma3:27b
 ```
 
-2. Install project dependencies:
+2. Install dependencies:
 ```bash
 uv pip install .
 ```
 
-## Usage
+## 🔧 Usage
 
 ### Running Experiments
 
 ```bash
-# Zero-shot experiments
+# Basic zero-shot experiments
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:1b
 uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:4b
-uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:1b --num-iterations 3
-uv run run_experiments.py --experiment_name zero-shot-self-improving --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:12b
+uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:27b
 
-# Few-shot experiments
+# Stability analysis
+uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:1b --num-iterations 5
+
+# Few-shot approaches
 uv run run_experiments.py --experiment_name few-shot --model_name gemma3:1b
-uv run run_experiments.py --experiment_name few-shot-naive-repeat --model_name gemma3:1b --num-iterations 3
-uv run run_experiments.py --experiment_name few-shot-self-improving --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_name few-shot-naive-repeat --model_name gemma3:1b --num-iterations 5
+
+# Self-improvement strategies
+uv run run_experiments.py --experiment_name zero-shot-self-improving --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_name zero-shot-dual-model-self-improving --model_name gemma3:1b --num-iterations 3
+
+# Additional few-shot experiments
+uv run run_experiments.py --experiment_name few-shot-dual-model-self-improving --model_name gemma3:1b --num-iterations 3
 ```
 
 ### Evaluation
 
+Run evaluation for specific results:
 ```bash
-uv run run_evaluation.py --results-path results/...
+uv run run_evaluation.py --results-path results/[experiment_file].json
 ```
 
-Alternatively run evaluation for all unprocessed results.
+Process all unprocessed results:
 ```bash
 for f in results/*.json; do [ ! -f "${f%.*}.csv" ] && uv run run_evaluation.py --results-path "$f"; done
 ```
 
-### Generate Summary
-
+Generate visualizations:
 ```bash
-uv run run_summary.py
+uv run run_analysis.py
 ```
 
-## Dataset Details
+## 📝 License
 
-Based on the [Program Synthesis with Large Language Models](https://arxiv.org/pdf/2108.07732) paper by Austin et al., 2021.
-
-### Dataset Split
-
-- Testing: Task IDs 11-510
-- Few-shot prompting: Task IDs 1-10 (not used for training)
-- Validation: Task IDs 511-600
-- Training: Task IDs 601-974
-
-The original paper used three-shot prompts with task_ids 2, 3, and 4 for few-shot experiments.
-
-
-## License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+[Apache License 2.0](LICENSE)

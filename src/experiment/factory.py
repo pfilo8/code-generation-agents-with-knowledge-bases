@@ -6,11 +6,13 @@ from src.experiment.zero_shot.zero_shot_experiment import (
     ZeroShotExperiment,
     ZeroShotWithNaiveRepetitionExperiment,
     ZeroShotWithSelfImprovingRepetitionExperiment,
+    ZeroShotWithDualModelSelfImprovingExperiment,
 )
 from src.experiment.few_shot.few_shot_experiment import (
     FewShotExperiment,
     FewShotWithNaiveRepetitionExperiment,
     FewShotWithSelfImprovingRepetitionExperiment,
+    FewShotWithDualModelSelfImprovingExperiment,
 )
 from src.experiment.knowledge_base.knowledge_base_experiment import (
     KnowledgeBaseExperiment,
@@ -25,9 +27,11 @@ class ExperimentFactory:
         "zero-shot": ZeroShotExperiment,
         "zero-shot-naive-repeat": ZeroShotWithNaiveRepetitionExperiment,
         "zero-shot-self-improving": ZeroShotWithSelfImprovingRepetitionExperiment,
+        "zero-shot-dual-model-self-improving": ZeroShotWithDualModelSelfImprovingExperiment,
         "few-shot": FewShotExperiment,
         "few-shot-naive-repeat": FewShotWithNaiveRepetitionExperiment,
         "few-shot-self-improving": FewShotWithSelfImprovingRepetitionExperiment,
+        "few-shot-dual-model-self-improving": FewShotWithDualModelSelfImprovingExperiment,
         "knowledge-base": KnowledgeBaseExperiment,
     }
 

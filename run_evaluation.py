@@ -33,20 +33,27 @@ def process_experiment_results(results_file: pathlib.Path) -> None:
                 "experiment_name": task["experiment_name"],
             }
 
-            # Evaluate each result until we find a successful one
-            task_result["success"] = False
+            # Create a list to store all attempt results
+            attempt_results = []
 
             if task["results"]:
-                for result in task["results"]:
+                for i, result in enumerate(task["results"], 1):
+                    attempt = {
+                        **task_result,  # Include all task information
+                        "attempt_number": i,
+                        "success": False,
+                    }
+
                     if result["code_action"]:
-                        succes, _, _ = evaluator.evaluate_task(
+                        success, _, _ = evaluator.evaluate_task(
                             result["code_action"], task["test_list"]
                         )
-                        if succes:
-                            task_result["success"] = True
-                            break
+                        attempt["success"] = success
 
-            all_results.append(task_result)
+                    attempt_results.append(attempt)
+
+            # Add to all_results instead of single task_result
+            all_results.extend(attempt_results)
 
     except Exception as e:
         print(f"Error processing {results_file}: {e}")
