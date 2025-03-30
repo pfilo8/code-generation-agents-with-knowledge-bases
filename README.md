@@ -71,6 +71,11 @@ uv run run_experiments.py --experiment_name few-shot-self-improving --model_name
 uv run run_evaluation.py --results-path results/...
 ```
 
+Alternatively run evaluation for all unprocessed results.
+```bash
+for f in results/*.json; do [ ! -f "${f%.*}.csv" ] && uv run run_evaluation.py --results-path "$f"; done
+```
+
 ### Generate Summary
 
 ```bash
