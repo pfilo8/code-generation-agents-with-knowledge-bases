@@ -1,7 +1,7 @@
 [project]
-name = "code-generation-agents-with-knowledge-bases"
+name = "small-gemma-models-for-code-generation"
 version = "0.1.0"
-description = "Add your description here"
+description = "This research project investigates whether smaller Gemma models (1B, 4B) can achieve code generation capabilities comparable to their larger counterparts (12B, 27B) through various enhancement techniques."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
