@@ -64,4 +64,10 @@ def parse_experiment_arguments() -> argparse.Namespace:
         help="Number of examples to use in few-shot experiments (default: 3)",
     )
 
+    parser.add_argument(
+        "--use-vector-search",
+        action="store_true",
+        help="Use vector search for few-shot example selection (default: False)",
+    )
+
     return parser.parse_args()

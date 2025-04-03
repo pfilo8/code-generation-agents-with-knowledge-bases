@@ -63,29 +63,12 @@ class ReflectorExperiment(BaseExperiment):
 
         if num_examples > 0:
             prompt += "\nExamples:"
-            start_task_id = self.config.FEW_SHOT_RANGE[0]
+            examples = self.get_few_shot_examples(example)
 
-            examples_added = 0
-            current_task_id = start_task_id
-
-            while (
-                examples_added < num_examples
-                and current_task_id <= self.config.FEW_SHOT_RANGE[1]
-            ):
-                ex = next(
-                    (ex for ex in self.data if ex["task_id"] == current_task_id), None
-                )
-
-                if not ex:
-                    self.logger.warning(
-                        f"No example for few-shot training found for task_id {current_task_id}"
-                    )
-                    current_task_id += 1
-                    continue
-
+            for ex in examples:
                 prompt += "\n<TASK>\n"
                 prompt += f"{ex['prompt']}"
-                prompt += "\n<TEST>\n"
+                prompt += "\n<TEST>"
                 prompt += "\n".join(ex["test_list"])
                 prompt += "\n<REFLECTION>\n"
                 prompt += self.generate_reflection_about_task(
@@ -95,16 +78,7 @@ class ReflectorExperiment(BaseExperiment):
                 prompt += ex["code"]
                 prompt += "\n\n"
 
-                examples_added += 1
-                current_task_id += 1
-
-            if examples_added < num_examples:
-                self.logger.warning(
-                    f"Could only find {examples_added} examples out of requested {num_examples}. "
-                    f"Reached end of available examples at task_id {current_task_id - 1}"
-                )
-
-            prompt += "Now is your turn to solve the next task. Remember to solve only this task and use the reflection.\n\n"
+            prompt += "Now is your turn to solve the next task. Remember to solve only this task.\n\n"
 
         return (
             prompt
@@ -120,7 +94,7 @@ class ReflectorExperiment(BaseExperiment):
         )
 
     def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:
-        """Process a single MBPP task using zero-shot approach."""
+        """Process a single MBPP task."""
         example = next((ex for ex in data if ex["task_id"] == task_id), None)
         if not example:
             self.logger.warning(f"No example found for task_id {task_id}")
@@ -133,7 +107,6 @@ class ReflectorExperiment(BaseExperiment):
 
         for _ in range(self.config.num_iterations):
             prompt = self.create_task_prompt(example)
-            print(prompt)
             response = self.generate_response(prompt)
             code_action = extract_code(response)
 

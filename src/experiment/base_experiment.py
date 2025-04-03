@@ -9,6 +9,7 @@ import ollama
 
 from src.config.experiment_config import ExperimentConfig
 from src.prompts import SYSTEM_PROMPT
+from src.experiment.vector_search import VectorSearch
 
 
 class BaseExperiment(ABC):
@@ -19,6 +20,16 @@ class BaseExperiment(ABC):
         self.data = self.load_data(self.config.data_path)
         self.results: List[Dict] = []
         self.logger = self._setup_logging()
+        
+        # Initialize vector search with training examples if enabled
+        if config.use_vector_search:
+            training_examples = [
+                ex for ex in self.data 
+                if self.config.TRAINING_RANGE[0] <= ex["task_id"] <= self.config.TRAINING_RANGE[1]
+            ]
+            self.vector_search = VectorSearch(training_examples=training_examples)
+        else:
+            self.vector_search = None
 
     @staticmethod
     def _setup_logging() -> logging.Logger:
@@ -49,6 +60,53 @@ class BaseExperiment(ABC):
             self.logger.error(f"Error generating response: {e}")
             return ""
 
+    def get_few_shot_examples(self, example: Dict) -> List[Dict]:
+        """Get few-shot examples using either vector search or sequential selection."""
+        num_examples = self.config.num_few_shot_examples
+        if num_examples <= 0:
+            return []
+
+        if self.vector_search:
+            # Get training examples for vector search
+            training_examples = [
+                ex for ex in self.data 
+                if self.config.TRAINING_RANGE[0] <= ex["task_id"] <= self.config.TRAINING_RANGE[1]
+            ]
+            
+            if not training_examples:
+                self.logger.warning("No training examples found for vector search")
+                return []
+                
+            # Find similar examples using vector search
+            similar_examples = self.vector_search.find_similar_examples(
+                example, training_examples, num_examples
+            )
+            
+            if not similar_examples:
+                self.logger.warning("No similar examples found through vector search")
+                return []
+                
+            return similar_examples
+        else:
+            # Use sequential selection from FEW_SHOT_RANGE
+            examples = []
+            start_task_id = self.config.FEW_SHOT_RANGE[0]
+            current_task_id = start_task_id
+
+            while len(examples) < num_examples and current_task_id <= self.config.FEW_SHOT_RANGE[1]:
+                ex = next((ex for ex in self.data if ex["task_id"] == current_task_id), None)
+                if ex:
+                    examples.append(ex)
+                current_task_id += 1
+
+            if len(examples) < num_examples:
+                self.logger.warning(
+                    f"Could only find {len(examples)} examples out of requested {num_examples}. "
+                    f"Reached end of available examples at task_id {current_task_id - 1}"
+                )
+
+            return examples
+
     def create_task_prompt(self, example: Dict) -> str:
         """Create the prompt from the example data and optionally few shot examples."""
         prompt = """
@@ -58,26 +116,9 @@ class BaseExperiment(ABC):
 
         if num_examples > 0:
             prompt += "\nExamples:"
-            start_task_id = self.config.FEW_SHOT_RANGE[0]
+            examples = self.get_few_shot_examples(example)
 
-            examples_added = 0
-            current_task_id = start_task_id
-
-            while (
-                examples_added < num_examples
-                and current_task_id <= self.config.FEW_SHOT_RANGE[1]
-            ):
-                ex = next(
-                    (ex for ex in self.data if ex["task_id"] == current_task_id), None
-                )
-
-                if not ex:
-                    self.logger.warning(
-                        f"No example for few-shot training found for task_id {current_task_id}"
-                    )
-                    current_task_id += 1
-                    continue
-
+            for ex in examples:
                 prompt += "\n<TASK>\n"
                 prompt += f"{ex['prompt']}"
                 prompt += "\n<TEST>"
@@ -85,15 +126,6 @@ class BaseExperiment(ABC):
                 prompt += "\n<SOLUTION>\n"
                 prompt += ex["code"]
                 prompt += "\n\n"
-
-                examples_added += 1
-                current_task_id += 1
-
-            if examples_added < num_examples:
-                self.logger.warning(
-                    f"Could only find {examples_added} examples out of requested {num_examples}. "
-                    f"Reached end of available examples at task_id {current_task_id - 1}"
-                )
 
             prompt += "Now is your turn to solve the next task. Remember to solve only this task.\n\n"
 

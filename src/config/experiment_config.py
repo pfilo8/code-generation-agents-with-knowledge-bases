@@ -21,6 +21,7 @@ class ExperimentConfig:
     num_few_shot_examples: int = field(default=0)
     output_dir: Path = field(default=Path("results"))
     test_range: Tuple[int, int] = FEW_SHOT_RANGE
+    use_vector_search: bool = field(default=False)
     experiment_additional_arguments: dict = field(default_factory=dict)
 
     @classmethod
@@ -39,6 +40,7 @@ class ExperimentConfig:
                 "output_dir",
                 "num_iterations",
                 "num_few_shot_examples",
+                "use_vector_search",
             ]
             and v is not None
         }
@@ -52,5 +54,6 @@ class ExperimentConfig:
             num_few_shot_examples=args.num_few_shot_examples,
             output_dir=args.output_dir,
             test_range=cls.TEST_RANGE,
+            use_vector_search=getattr(args, "use_vector_search", False),
             experiment_additional_arguments=additional_args,
         )
