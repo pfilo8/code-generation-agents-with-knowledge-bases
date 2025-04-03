@@ -6,9 +6,9 @@
 
 This research project investigates whether smaller Gemma models (1B, 4B) can achieve code generation capabilities comparable to their larger counterparts (12B, 27B) through various enhancement techniques. We explore:
 
+- Zero-shot baseline approaches
 - Few-shot learning approaches
-- Self-improvement strategies
-- Dual-model architectures
+- Zero- and few-shot approaches with additional reflection from additional model
 
 ## 🔍 Research Questions
 
@@ -16,8 +16,7 @@ This research project investigates whether smaller Gemma models (1B, 4B) can ach
 2. How stable are smaller models' results in zero-shot scenarios?
 3. What improvements can be achieved through few-shot approaches?
 4. How does the number of examples in few-shot learning influence results?
-5. How do example selection strategies impact few-shot learning outcomes?
-6. Can self-improvement techniques enhance zero-shot or few-shot performance?
+5. Can the additional reflection regarding the task improve the results?
 
 ## 🧪 Methodology
 
@@ -32,9 +31,8 @@ Moreover, for the purpose of this repository we use 50 test examples due to comp
 ### Experimental Approaches
 
 1. **Zero-shot baseline**: Direct code generation without examples
-2. **Naive repetition**: Multiple generation attempts
-3. **Self-improvement**: Iterative refinement using feedback from execution errors
-4. **Dual-model approach**: Separate models for code and feedback generation
+2. **Few-shot baseline**: Direct code generation with examples
+3. **Reflection Agent**: Direct code generation with additional reflection regarding the task from the external model
 
 All experiments run locally on Apple Silicon M4 Pro processors for reproducibility.
 
@@ -71,14 +69,13 @@ In this section, we analyze the impact of number of examples to the model perfor
 
 We can observe that increasing number of examples in the few-shot scenario has a significant impact on the model performance. What is worrying regarding the results is the fact that model in the 7-shot approach is not performing better than 3-shot approach in the Q3. Moreover, we can observe the significant gap between results for 3-shot approach between Q3 and Q4 which might be a result of the significant randomness in the model generation capabilities. One of the possible solutions would be running the model by more iterations or evaluating model on more examples. However, both solutions require more computational budget. Finally, even though we have seen in Q2 that the results are stabilizing around 3 iterations, in pratice it turns out that it's not necessarily true.
 
-### Q5: Example Selection Strategies
-Note: This section will be populated with results comparing different strategies for selecting few-shot examples.
+### Q5: Self-Improvement Techniques
 
-### Q6: Self-Improvement Techniques
-We implemented several self-improvement approaches:
+In this section, we analyze whether providing additional reflection regarding the task from an external Gemma 4B model can improve the results. We compare the zero-shot approach with the reflection approach, where the model receives additional insights. For the purpose of this task we analyze only one iteration due to computational constraints. Moreover, we are using 4B models as 1B models are too unstable to conclude something.
 
-- Zero-shot self-improvement: The model iteratively refines its own code based on feedback
-- Dual-model self-improvement: Separate models handle generation and analysis roles
+![Zero-shot vs Reflection Approach Comparison](figures/Q5_reflection_approach.png)
+
+Suprisingly the self-reflection don't make the model results stronger and the results are on par.
 
 ## 🚀 Getting Started
 
@@ -126,6 +123,10 @@ uv run run_experiments.py --experiment_type single-model --experiment_name q4-fe
 uv run run_experiments.py --experiment_type single-model --experiment_name q4-few-shot-3-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 3
 uv run run_experiments.py --experiment_type single-model --experiment_name q4-few-shot-5-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 5
 uv run run_experiments.py --experiment_type single-model --experiment_name q4-few-shot-7-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 7
+
+# Reflection Approach
+uv run run_experiments.py --experiment_type single-model --experiment_name q5-zero-shot-gemma3:4b --model_name gemma3:4b --num-iterations 3 --num-few-shot-examples 0
+uv run run_experiments.py --experiment_type reflection-approach --experiment_name q5-reflection-approach-gemma3:4b --model_name gemma3:4b --num-iterations 3 --num-few-shot-examples 0
 ```
 
 ### Evaluation
@@ -147,6 +148,9 @@ uv run run_evaluation.py --results-path results/q4-few-shot-1-gemma3:1b*.json
 uv run run_evaluation.py --results-path results/q4-few-shot-3-gemma3:1b*.json
 uv run run_evaluation.py --results-path results/q4-few-shot-5-gemma3:1b*.json
 uv run run_evaluation.py --results-path results/q4-few-shot-7-gemma3:1b*.json
+
+uv run run_evaluation.py --results-path results/q5-zero-shot-gemma3:12b*.json
+uv run run_evaluation.py --results-path results/q5-reflection-approach-gemma3:12b*.json
 ```
 
 Generate visualizations:

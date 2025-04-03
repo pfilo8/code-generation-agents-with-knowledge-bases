@@ -9,7 +9,7 @@ class ExperimentConfig:
     """Configuration for MBPP experiments."""
 
     FEW_SHOT_RANGE: Tuple[int, int] = (1, 10)
-    TEST_RANGE: Tuple[int, int] = (11, 13)  # (11, 510)
+    TEST_RANGE: Tuple[int, int] = (11, 102)  # (11, 510)
     VALIDATION_RANGE: Tuple[int, int] = (511, 600)
     TRAINING_RANGE: Tuple[int, int] = (601, 974)
 

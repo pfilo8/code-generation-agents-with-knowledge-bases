@@ -99,11 +99,11 @@ class BaseExperiment(ABC):
 
         return (
             prompt
-            + "\n<TASK>"
+            + "\n<TASK>\n"
             + example["prompt"]
-            + "\n<TEST>"
+            + "\n<TEST>\n"
             + "\n".join(example["test_list"])
-            + "\n<SOLUTION>"
+            + "\n<SOLUTION>\n"
         )
 
     @abstractmethod

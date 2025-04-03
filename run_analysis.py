@@ -11,6 +11,7 @@ PATH_Q1_FIGURE = "Q1_baselines.png"
 PATH_Q2_FIGURE = "Q2_stability.png"
 PATH_Q3_FIGURE = "Q3_few_shot_improvement.png"
 PATH_Q4_FIGURE = "Q4_few_shot_number_of_examples.png"
+PATH_Q5_FIGURE = "Q5_reflection_approach.png"
 
 
 def analyze_baseline_results() -> None:
@@ -255,6 +256,65 @@ def analyze_few_shot_number_of_examples_results() -> None:
     plt.close()
 
 
+def analyze_reflection_approach_results() -> None:
+    # Define the experiment names
+    experiment_names = ["q5-zero-shot-gemma3:12b", "q5-reflection-approach-gemma3:12b"]
+
+    # Get relevant CSV files and store accuracies
+    accuracies: Dict[str, float] = {}
+
+    for name in experiment_names:
+        pattern = f"{DIR_RESULTS}/{name}*.csv"
+        matching_files = glob.glob(pattern)
+
+        if not matching_files:
+            print(f"Warning: No files found for Experiment {name}")
+            continue
+
+        # Take the first matching file
+        file = matching_files[0]
+        df = pd.read_csv(file)
+        # Group by task_id and check if any attempt was successful
+        task_success = df.groupby("task_id")["success"].max()
+        accuracy = task_success.mean() * 100  # Convert to percentage
+        accuracies[f"{name}"] = accuracy
+
+    # Create bar plot
+    plt.figure(figsize=(8, 6))
+    plt.bar(
+        accuracies.keys(),
+        accuracies.values(),
+        color="#2E86C1",
+        edgecolor="black",
+        width=0.6,
+    )
+
+    # Customize plot
+    plt.title(
+        "Zero-shot vs Reflection Approach Performance Comparison", fontsize=14, pad=20
+    )
+    plt.xlabel("Model", fontsize=12)
+    plt.ylabel("Accuracy (%)", fontsize=12)
+    plt.ylim(0, 100)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
+
+    # Add value labels on top of bars
+    for i, (model, accuracy) in enumerate(accuracies.items()):
+        plt.text(
+            i,
+            accuracy + 1,
+            f"{accuracy:.1f}%",
+            ha="center",
+            va="bottom",
+            fontsize=10,
+            fontweight="bold",
+        )
+
+    # Save plot
+    plt.savefig(f"{DIR_FIGURES}/{PATH_Q5_FIGURE}", bbox_inches="tight")
+    plt.close()
+
+
 def main():
     # Ensure figures directory exists
     os.makedirs(DIR_FIGURES, exist_ok=True)
@@ -263,6 +323,7 @@ def main():
     analyze_stability()
     analyze_few_shot_improvement_results()
     analyze_few_shot_number_of_examples_results()
+    analyze_reflection_approach_results()
 
 
 if __name__ == "__main__":

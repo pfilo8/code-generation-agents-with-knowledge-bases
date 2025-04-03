@@ -3,13 +3,17 @@ from typing import Type
 from src.config.experiment_config import ExperimentConfig
 from src.experiment.base_experiment import BaseExperiment
 from src.experiment.single_model_experiment import SingleModelExperiment
+from src.experiment.reflector_experiment import ReflectorExperiment
 
 
 class ExperimentFactory:
     """Factory for creating experiment instances based on experiment name."""
 
     # Registry of available experiment types
-    EXPERIMENT_TYPES = {"single-model": SingleModelExperiment}
+    EXPERIMENT_TYPES = {
+        "single-model": SingleModelExperiment,
+        "reflection-approach": ReflectorExperiment,
+    }
 
     @classmethod
     def create_experiment(cls, config: ExperimentConfig) -> BaseExperiment:

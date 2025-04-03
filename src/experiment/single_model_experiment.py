@@ -7,10 +7,10 @@ from src.experiment.utils import extract_code
 
 
 class SingleModelExperiment(BaseExperiment):
-    """Implements zero-shot with repetition approach for MBPP experiment."""
+    """Implements single model experiment for MBPP experiment."""
 
     def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:
-        """Process a single MBPP task using zero-shot approach."""
+        """Process a single MBPP task."""
         example = next((ex for ex in data if ex["task_id"] == task_id), None)
         if not example:
             self.logger.warning(f"No example found for task_id {task_id}")

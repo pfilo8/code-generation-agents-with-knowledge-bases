@@ -21,7 +21,8 @@ def parse_experiment_arguments() -> argparse.Namespace:
         type=str,
         default="single-model",
         choices=[
-            "single-model"
+            "single-model",
+            "reflection-approach"
         ],
         help="Experiment type to run (default: zero-shot)",
     )
