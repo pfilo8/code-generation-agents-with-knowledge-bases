@@ -8,7 +8,7 @@ This research project investigates whether smaller Gemma models (1B, 4B) can ach
 
 - Zero-shot baseline approaches
 - Few-shot learning approaches
-- Zero- and few-shot approaches with additional reflection from additional model
+- Zero- and few-shot approaches with additional reflection from a secondary model
 - Vector search-based few-shot example retrieval
 
 ## 🔍 Research Questions
@@ -17,8 +17,8 @@ This research project investigates whether smaller Gemma models (1B, 4B) can ach
 2. How stable are smaller models' results in zero-shot scenarios?
 3. What improvements can be achieved through few-shot approaches?
 4. How does the number of examples in few-shot learning influence results?
-5. Can the additional reflection from other agent regarding the task improve the results?
-6. Can the few-shot examples and additional reflection significantly improves the results of Gemma 12B?
+5. Can additional reflection from another agent regarding the task improve results?
+6. Can few-shot examples and additional reflection significantly improve Gemma 12B's results?
 7. Can vector search-based few-shot example retrieval improve model performance compared to sequential selection?
 8. How does the number of examples affect performance in vector search-based few-shot learning?
 
@@ -30,90 +30,93 @@ We utilize a hand-verified subset of the [Mostly Basic Python Problems (MBPP)](h
 - Task description
 - Reference solution
 - 3 test cases for validation
-Moreover, for the purpose of this repository we use 50 test examples due to computational budget limitations.
+
+For this study, we used 50 test examples due to computational budget limitations.
 
 ### Experimental Approaches
 
 1. **Zero-shot baseline**: Direct code generation without examples
 2. **Few-shot baseline**: Direct code generation with examples
-3. **Reflection Agent**: Direct code generation with additional reflection regarding the task from the other agent
+3. **Reflection Agent**: Direct code generation with additional task reflection from another agent
 4. **Vector Search-based Few-Shot**: Using sentence transformers (all-MiniLM-L6-v2) to compute embeddings and select semantically similar examples based on cosine similarity
 
 ### Computational Resources
 
-All experiments run locally on Apple Silicon M4 Pro processors for reproducibility.
+All experiments were run locally on Apple Silicon M4 Pro processors for reproducibility.
 
 ## 📊 Key Findings
 
 ### Q1: Zero-Shot Capabilities Across Model Sizes
 
-For our evaluation, we generated one code sample per problem with temperature set to $0.5$ and assessed whether it passed all three provided test cases. Moreover, we limited the model output tokens to 1000. Those settings will be the same for all the following experiments.
+For our evaluation, we generated one code sample per problem with a temperature setting of 0.5 and assessed whether it passed all three provided test cases. We limited model output tokens to 1000. These settings remained consistent across all subsequent experiments.
 
 ![Zero-shot baseline performance](figures/Q1_baselines.png)
 
-Model performance gradually improves with parameter count, starting from ~55% for the 1B model and reaching ~90% for the 27B model.
+Model performance gradually improved with parameter count, starting from ~55% for the 1B model and reaching ~90% for the 27B model.
 
 ### Q2: Results Stability in Zero-Shot Scenarios
 
-As we are operiting only on the small sample of the data, we evaluated result stability by generating 5 different responses for each query and tracked accumulated accuracy across iterations. Accumulated accuracy means whether the model in N number of trails had at least one success calculated over all test samples. This experiment was performed using Gemma3 1B.
+As we operated on a small sample of data, we evaluated result stability by generating 5 different responses for each query and tracked accumulated accuracy across iterations. Accumulated accuracy measures whether the model had at least one success in N trials, calculated across all test samples. This experiment was performed using Gemma3 1B.
 
 ![Zero-shot stability analysis](figures/Q2_stability.png)
 
-Our analysis shows that results stabilize after 2-3 iterations, informing our experimental design choices. For subsequent experiments, we standardized on 3 iterations to ensure result comparability, unless stated otherwise.
+Our analysis showed that results stabilized after 2-3 iterations, informing our experimental design choices. For subsequent experiments, we standardized on 3 iterations to ensure result comparability, unless stated otherwise.
 
 ### Q3: Zero-Shot vs. Few-Shot Comparison
-We analyze the impact of providing examples for the model into the prompt. For that purpose we evaluate the zero-shot approach and few-shot approach with 3 examples. Both experiments are calculated three times and we calculate accuracy based on the information whether any of the model trials for each task was successful.
+
+We analyzed the impact of providing examples in the model prompt by evaluating zero-shot approaches against few-shot approaches with 3 examples. Both experiments were run three times, with accuracy calculated based on whether any of the model trials for each task was successful.
 
 ![Zero-Shot vs. Few-Shot Comparison](figures/Q3_few_shot_improvement.png)
 
-We can observe that the results for the provided runs were slightly improved. However, it's worth noting that the results of zero-shot approach are significantly lower than usual, e.g., presented in Q1 and Q2 results. One of the possible solutions to get the reliable results would be running the model by more iterations or evaluating model on more examples. However, both solutions require more computational budget. Finally, even though we have seen in Q2 that the results are stabilizing around 3 iterations, in pratice it turns out that it's not necessarily true.
-
+We observed slight improvements with the few-shot approach. However, it's worth noting that the zero-shot results were significantly lower than usual (as seen in Q1 and Q2). Increasing iterations or evaluating more examples could produce more reliable results, though both solutions would require greater computational resources. While Q2 suggested results stabilize around 3 iterations, our practical findings indicate this may not always be the case.
 
 ### Q4: Impact of Example Count in Few-Shot Learning
-In this section, we analyze the impact of number of examples to the model performance in a few-shot scenario. The methodology is similar to previous research questions, i.e., 3 runs with the accuracy at any successful attempt.
+
+We analyzed how the number of examples affects model performance in few-shot scenarios, using a methodology similar to previous research questions (3 runs with accuracy measured by any successful attempt).
 
 ![Impact of Example Count in Few-Shot Learning](figures/Q4_few_shot_number_of_examples.png)
 
-We can observe that increasing number of examples in the few-shot scenario has a significant impact on the model performance and has a reasonable trend of improved accuracy with the larger number of samples presented to the model in the prompt.
+We observed that increasing the number of examples in few-shot scenarios significantly improved model performance, showing a clear trend of enhanced accuracy with more examples presented to the model in the prompt.
 
-### Q5: Zero-shot vs Zero-shot Reflection Approach Comparison
+### Q5: Zero-shot vs. Zero-shot Reflection Approach Comparison
 
-In this section, we analyze whether providing additional reflection regarding the task from an agent using Gemma 4B model can improve the results. We compare the zero-shot approach with the reflection approach, where the model receives additional insights. For the purpose of this task we analyze only one iteration due to computational constraints. Moreover, we are using 4B and 12B models.
+We analyzed whether providing additional task reflection from a Gemma 4B model could improve results. We compared the zero-shot approach with the reflection approach for both 4B and 12B models, running just one iteration due to computational constraints.
 
 ![Zero-shot vs Reflection Approach Comparison](figures/Q5_reflection_approach.png)
 
-Suprisingly the additional reflection component don't make the model results stronger and the results for both 4B and 12B are on par.
+Surprisingly, the additional reflection component did not strengthen model results, with performance remaining on par for both 4B and 12B models.
 
-### Q6: Zero-shot vs Few-shot Reflection Approach Comparison
+### Q6: Zero-shot vs. Few-shot Reflection Approach Comparison
 
-In this section, we analyze whether combining few-shot learning with reflection can improve model performance compared to zero-shot. We compare the zero-shot approach with a reflection approach that includes both few-shot examples and task reflection. For this analysis, we use the Gemma 12B model and 3 few-shot examples.
+We analyzed whether combining few-shot learning with reflection could improve model performance compared to zero-shot approaches. For this analysis, we used the Gemma 12B model with 3 few-shot examples.
 
 ![Zero-shot vs Few-shot Reflection Approach Comparison](figures/Q6_reflection_few_shot_comparison.png)
 
-Unfortunately the few-shot approach with reflection don't make the model results stronger either. It is somehow understandable from the perspective that few-shot approaches didn't improve the results significanly and reliably in Q3 and Q4.
+Unfortunately, the few-shot approach with reflection did not strengthen model results either. This is somewhat understandable given that few-shot approaches didn't consistently improve results in Q3 and Q4.
 
 ### Q7: Vector Search-based Few-Shot Example Retrieval
 
-In this section, we investigate whether using vector search to select semantically similar examples can improve the model's performance compared to sequential example selection. We use the sentence transformer model (all-MiniLM-L6-v2) to compute embeddings and find similar examples based on cosine similarity.
+We investigated whether using vector search to select semantically similar examples could improve model performance compared to sequential example selection. We used the sentence transformer model (all-MiniLM-L6-v2) to compute embeddings and find similar examples based on cosine similarity.
 
 ![Comparison of Vector Search-based Few-Shot Example Retrieval Against Baselines](figures/Q7_vector_based_few_shot.png)
 
-The results show that vector search-based example selection provides only a small accuracy improvement.
+The results showed that vector search-based example selection provided only a small accuracy improvement.
 
 ### Q8: Impact of Example Count in Vector Search-based Few-Shot Learning
 
-Building on Q7, we analyze how the number of examples selected through vector search affects model performance. We compare different numbers of examples (1, 3, 5, and 7) to understand if more examples lead to better results.
+Building on Q7, we analyzed how the number of examples selected through vector search affects model performance. We compared different numbers of examples (1, 3, 5, and 7) to understand if more examples lead to better results.
 
-![Comparison of Vector Search-based Few-Shot Example Retrieval Against Baselines](figures/Q8_vector_search_number_of_examples.png)
+![Impact of Example Count in Vector Search-based Few-Shot Learning](figures/Q8_vector_search_number_of_examples.png)
 
-Increasing the number of examples in vector search-based few-shot learning shows increasing accuracy for the larger amount of samples.
+Increasing the number of examples in vector search-based few-shot learning showed improved accuracy with larger sample sizes.
 
 ## Summary
 
-Our research on Gemma models for code generation revealed that larger models (12B, 27B) consistently outperform smaller variants (1B, 4B) in zero-shot tasks. While multiple iterations improve success rates, they plateau after 3 attempts. Few-shot learning showed modest improvements that scaled with example count, though surprisingly, adding structured reflection components to prompts did not yield significant improvements. Vector-based example selection provided only marginal benefits over sequential selection. The results suggest that simpler approaches like basic few-shot learning can be as effective as more complex strategies, and that balancing model size with example count may be more practical than pursuing sophisticated prompt engineering techniques.
+Our research on Gemma models for code generation revealed that larger models (12B, 27B) consistently outperform smaller variants (1B, 4B) in zero-shot tasks. While multiple iterations improved success rates, they plateaued after approximately 3 attempts. Few-shot learning showed modest improvements that scaled with example count, though surprisingly, adding structured reflection components to prompts did not yield significant improvements. Vector-based example selection provided only marginal benefits over sequential selection.
 
-The final note, the conclusions might not be fully valid, as the previous experiments showed lack of the results stability.
+The results suggest that simpler approaches like basic few-shot learning can be as effective as more complex strategies, and that balancing model size with example count may be more practical than pursuing sophisticated prompt engineering techniques.
 
+It's important to note that these conclusions might not be fully valid, as previous experiments showed a lack of result stability.
 
 ## 🚀 Getting Started
 
