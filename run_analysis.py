@@ -235,6 +235,7 @@ def analyze_few_shot_number_of_examples_results() -> None:
     plt.xlabel("Model", fontsize=12)
     plt.ylabel("Accuracy (%)", fontsize=12)
     plt.ylim(0, 100)
+    plt.xticks(rotation=45)
     plt.grid(axis="y", linestyle="--", alpha=0.7)
 
     # Add value labels on top of bars
