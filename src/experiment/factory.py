@@ -2,30 +2,14 @@ from typing import Type
 
 from src.config.experiment_config import ExperimentConfig
 from src.experiment.base_experiment import BaseExperiment
-from src.experiment.zero_shot import (
-    ZeroShotExperiment,
-    ZeroShotWithSelfImprovingSimpleExperiment,
-    ZeroShotWithDualModelSelfImprovingExperiment,
-)
-from src.experiment.few_shot import (
-    FewShotExperiment,
-    FewShotWithSelfImprovingSimpleExperiment,
-    FewShotWithDualModelSelfImprovingExperiment,
-)
+from src.experiment.single_model_experiment import SingleModelExperiment
 
 
 class ExperimentFactory:
     """Factory for creating experiment instances based on experiment name."""
 
     # Registry of available experiment types
-    EXPERIMENT_TYPES = {
-        "zero-shot": ZeroShotExperiment,
-        "zero-shot-self-improving": ZeroShotWithSelfImprovingSimpleExperiment,
-        "zero-shot-dual-model-self-improving": ZeroShotWithDualModelSelfImprovingExperiment,
-        "few-shot": FewShotExperiment,
-        "few-shot-self-improving": FewShotWithSelfImprovingSimpleExperiment,
-        "few-shot-dual-model-self-improving": FewShotWithDualModelSelfImprovingExperiment,
-    }
+    EXPERIMENT_TYPES = {"single-model": SingleModelExperiment}
 
     @classmethod
     def create_experiment(cls, config: ExperimentConfig) -> BaseExperiment:

@@ -6,16 +6,8 @@ from src.experiment.base_experiment import BaseExperiment
 from src.experiment.utils import extract_code
 
 
-class ZeroShotExperiment(BaseExperiment):
+class SingleModelExperiment(BaseExperiment):
     """Implements zero-shot with repetition approach for MBPP experiment."""
-
-    def create_task_prompt(self, example: Dict) -> str:
-        """Create the prompt from the example data."""
-        return (
-            example["prompt"]
-            + "\nYour code should satisfy these tests:\n"
-            + "\n".join(example["test_list"])
-        )
 
     def process_task(self, task_id: int, data: List[Dict]) -> Optional[Dict]:
         """Process a single MBPP task using zero-shot approach."""
