@@ -15,7 +15,9 @@ class ExperimentConfig:
 
     data_path: Path = field(default=Path("data/sanitized-mbpp.json"))
     model_name: str = field(default="gemma3:4b")
-    experiment_name: str = field(default="zero-shot")
+    experiment_name: str = field(default="experiment")
+    experiment_type: str = field(default="zero-shot")
+    num_iterations: int = field(default=1)
     output_dir: Path = field(default=Path("results"))
     test_range: Tuple[int, int] = FEW_SHOT_RANGE
     experiment_additional_arguments: dict = field(default_factory=dict)
@@ -27,14 +29,24 @@ class ExperimentConfig:
         additional_args = {
             k: v
             for k, v in vars(args).items()
-            if k not in ["data_path", "model_name", "experiment_name", "output_dir"]
+            if k
+            not in [
+                "data_path",
+                "model_name",
+                "experiment_name",
+                "experiment_type",
+                "output_dir",
+                "num_iterations",
+            ]
             and v is not None
         }
 
         return cls(
             data_path=args.data_path,
             model_name=args.model_name,
+            experiment_type=args.experiment_type,
             experiment_name=args.experiment_name,
+            num_iterations=args.num_iterations,
             output_dir=args.output_dir,
             test_range=cls.TEST_RANGE,
             experiment_additional_arguments=additional_args,

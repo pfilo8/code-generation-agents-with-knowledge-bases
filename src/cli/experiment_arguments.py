@@ -16,21 +16,26 @@ def parse_experiment_arguments() -> argparse.Namespace:
     )
 
     parser.add_argument(
-        "--experiment_name",
+        "--experiment_type",
         "-e",
         type=str,
         default="zero-shot",
         choices=[
             "zero-shot",
-            "zero-shot-naive-repeat",
             "zero-shot-self-improving",
             "zero-shot-dual-model-self-improving",
             "few-shot",
-            "few-shot-naive-repeat",
             "few-shot-self-improving",
             "few-shot-dual-model-self-improving",
         ],
         help="Experiment type to run (default: zero-shot)",
+    )
+
+    parser.add_argument(
+        "--experiment_name",
+        type=str,
+        default="experiment",
+        help="Name of the experiment.",
     )
 
     parser.add_argument(
@@ -49,7 +54,6 @@ def parse_experiment_arguments() -> argparse.Namespace:
         help="Directory to save output files (default: results)",
     )
 
-    # Add experiment-specific arguments
     parser.add_argument(
         "--num-iterations",
         type=int,

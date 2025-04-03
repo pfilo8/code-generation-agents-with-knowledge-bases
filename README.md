@@ -90,6 +90,7 @@ ollama pull gemma3:27b
 
 2. Install dependencies:
 ```bash
+uv venv
 uv pip install .
 ```
 
@@ -99,36 +100,26 @@ uv pip install .
 
 ```bash
 # Basic zero-shot experiments
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:1b
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:4b
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:12b
-uv run run_experiments.py --experiment_name zero-shot --model_name gemma3:27b
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q1-zero-shot-gemma3:1b --model_name gemma3:1b
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q1-zero-shot-gemma3:4b --model_name gemma3:4b
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q1-zero-shot-gemma3:12b --model_name gemma3:12b
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q1-zero-shot-gemma3:27b --model_name gemma3:27b
 
 # Stability analysis
-uv run run_experiments.py --experiment_name zero-shot-naive-repeat --model_name gemma3:1b --num-iterations 5
-
-# Few-shot approaches
-uv run run_experiments.py --experiment_name few-shot --model_name gemma3:1b
-uv run run_experiments.py --experiment_name few-shot-naive-repeat --model_name gemma3:1b --num-iterations 5
-
-# Self-improvement strategies
-uv run run_experiments.py --experiment_name zero-shot-self-improving --model_name gemma3:1b --num-iterations 3
-uv run run_experiments.py --experiment_name zero-shot-dual-model-self-improving --model_name gemma3:1b --num-iterations 3
-
-# Additional few-shot experiments
-uv run run_experiments.py --experiment_name few-shot-dual-model-self-improving --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q2-gemma3:1b --model_name gemma3:1b --num-iterations 5
 ```
 
 ### Evaluation
 
 Run evaluation for specific results:
 ```bash
-uv run run_evaluation.py --results-path results/[experiment_file].json
-```
+# Q1 Experiments
+uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:1b*.json
+uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:4b*.json
+uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:12b*.json
+uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:27b*.json
 
-Process all unprocessed results:
-```bash
-for f in results/*.json; do [ ! -f "${f%.*}.csv" ] && uv run run_evaluation.py --results-path "$f"; done
+uv run run_evaluation.py --results-path results/q2-gemma3:1b*.json
 ```
 
 Generate visualizations:

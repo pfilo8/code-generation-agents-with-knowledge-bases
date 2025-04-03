@@ -60,10 +60,7 @@ class BaseExperiment(ABC):
         results_dir.mkdir(exist_ok=True)
 
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = (
-            results_dir
-            / f"{self.config.model_name}_{self.config.experiment_name}_{timestamp}.json"
-        )
+        output_file = results_dir / f"{self.config.experiment_name}_{timestamp}.json"
 
         try:
             with open(output_file, "w") as f:

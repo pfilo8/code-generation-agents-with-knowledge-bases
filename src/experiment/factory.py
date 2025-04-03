@@ -2,20 +2,15 @@ from typing import Type
 
 from src.config.experiment_config import ExperimentConfig
 from src.experiment.base_experiment import BaseExperiment
-from src.experiment.zero_shot.zero_shot_experiment import (
+from src.experiment.zero_shot import (
     ZeroShotExperiment,
-    ZeroShotWithNaiveRepetitionExperiment,
-    ZeroShotWithSelfImprovingRepetitionExperiment,
+    ZeroShotWithSelfImprovingSimpleExperiment,
     ZeroShotWithDualModelSelfImprovingExperiment,
 )
-from src.experiment.few_shot.few_shot_experiment import (
+from src.experiment.few_shot import (
     FewShotExperiment,
-    FewShotWithNaiveRepetitionExperiment,
-    FewShotWithSelfImprovingRepetitionExperiment,
+    FewShotWithSelfImprovingSimpleExperiment,
     FewShotWithDualModelSelfImprovingExperiment,
-)
-from src.experiment.knowledge_base.knowledge_base_experiment import (
-    KnowledgeBaseExperiment,
 )
 
 
@@ -25,14 +20,11 @@ class ExperimentFactory:
     # Registry of available experiment types
     EXPERIMENT_TYPES = {
         "zero-shot": ZeroShotExperiment,
-        "zero-shot-naive-repeat": ZeroShotWithNaiveRepetitionExperiment,
-        "zero-shot-self-improving": ZeroShotWithSelfImprovingRepetitionExperiment,
+        "zero-shot-self-improving": ZeroShotWithSelfImprovingSimpleExperiment,
         "zero-shot-dual-model-self-improving": ZeroShotWithDualModelSelfImprovingExperiment,
         "few-shot": FewShotExperiment,
-        "few-shot-naive-repeat": FewShotWithNaiveRepetitionExperiment,
-        "few-shot-self-improving": FewShotWithSelfImprovingRepetitionExperiment,
+        "few-shot-self-improving": FewShotWithSelfImprovingSimpleExperiment,
         "few-shot-dual-model-self-improving": FewShotWithDualModelSelfImprovingExperiment,
-        "knowledge-base": KnowledgeBaseExperiment,
     }
 
     @classmethod
@@ -49,11 +41,11 @@ class ExperimentFactory:
         Raises:
             ValueError: If the experiment type is not recognized
         """
-        experiment_class = cls.EXPERIMENT_TYPES.get(config.experiment_name)
+        experiment_class = cls.EXPERIMENT_TYPES.get(config.experiment_type)
         if experiment_class is None:
             available_types = ", ".join(cls.EXPERIMENT_TYPES.keys())
             raise ValueError(
-                f"Unknown experiment type '{config.experiment_name}'. "
+                f"Unknown experiment type '{config.experiment_type}'. "
                 f"Available types are: {available_types}"
             )
 

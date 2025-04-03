@@ -13,24 +13,29 @@ PATH_Q2_FIGURE = "Q2_stability.png"
 
 def analyze_baseline_results() -> None:
     # Define the models in order
-    model_sizes = ["1b", "4b", "12b", "27b"]
+    experiment_names = [
+        "q1-zero-shot-gemma3:1b",
+        "q1-zero-shot-gemma3:4b",
+        "q1-zero-shot-gemma3:12b",
+        "q1-zero-shot-gemma3:27b",
+    ]
 
     # Get relevant CSV files and store accuracies
     accuracies: Dict[str, float] = {}
 
-    for size in model_sizes:
-        pattern = f"{DIR_RESULTS}/gemma3:{size}_zero-shot*.csv"
+    for name in experiment_names:
+        pattern = f"{DIR_RESULTS}/{name}*.csv"
         matching_files = glob.glob(pattern)
 
         if not matching_files:
-            print(f"Warning: No files found for Gemma {size}")
+            print(f"Warning: No files found for Experiment {name}")
             continue
 
         # Take the first matching file
         file = matching_files[0]
         df = pd.read_csv(file)
         accuracy = df["success"].mean() * 100  # Convert to percentage
-        accuracies[f"Gemma {size}"] = accuracy
+        accuracies[f"{name}"] = accuracy
 
     # Create bar plot
     plt.figure(figsize=(10, 6))
@@ -68,7 +73,7 @@ def analyze_baseline_results() -> None:
 
 def analyze_stability() -> None:
     # Find the relevant CSV file
-    pattern = f"{DIR_RESULTS}/gemma3:1b_zero-shot-naive*.csv"
+    pattern = f"{DIR_RESULTS}/q2-gemma3:1b*.csv"
     matching_files = glob.glob(pattern)
 
     if not matching_files:
