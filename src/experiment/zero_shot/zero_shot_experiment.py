@@ -34,7 +34,9 @@ class ZeroShotExperiment(BaseExperiment):
             response = self.generate_response(prompt)
             code_action = extract_code(response)
 
-            results.append({"response": response, "code_action": code_action})
+            results.append(
+                {"prompt": prompt, "response": response, "code_action": code_action}
+            )
 
         return {
             **example,

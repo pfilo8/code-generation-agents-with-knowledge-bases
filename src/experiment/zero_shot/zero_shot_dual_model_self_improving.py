@@ -116,6 +116,7 @@ class ZeroShotWithDualModelSelfImprovingExperiment(ZeroShotExperiment):
 
             results.append(
                 {
+                    "prompt": prompt,
                     "response": response,
                     "code_action": code_action,
                     "execution_success": success,

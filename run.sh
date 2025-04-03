@@ -22,6 +22,28 @@ echo "=========================="
 echo -e "\n🔍 Running Gemma 3 1B model with 5 iterations..."
 uv run run_experiments.py --experiment_type zero-shot --experiment_name q2-gemma3:1b --model_name gemma3:1b --num-iterations 5
 
+echo -e "\n📊 Running Q3 Experiments"
+echo "=========================="
+echo -e "\n🔍 Running Q3 Zero-shot Gemma 3 1B model..."
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q3-zero-shot-gemma3:1b --model_name gemma3:1b --num-iterations 3
+
+echo -e "\n🔍 Running Q3 Few-shot Gemma 3 1B model..."
+uv run run_experiments.py --experiment_type few-shot --experiment_name q3-few-shot-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 3
+
+echo -e "\n📊 Running Q4 Experiments"
+echo "=========================="
+echo -e "\n🔍 Running Q4 Few-shot Gemma 3 1B model with 1 example..."
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-1-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 1
+
+echo -e "\n🔍 Running Q4 Few-shot Gemma 3 1B model with 3 examples..."
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-3-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 3
+
+echo -e "\n🔍 Running Q4 Few-shot Gemma 3 1B model with 5 examples..."
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-5-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 5
+
+echo -e "\n🔍 Running Q4 Few-shot Gemma 3 1B model with 7 examples..."
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-7-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 7
+
 echo -e "\n📈 Running Evaluations"
 echo "======================"
 
@@ -39,6 +61,24 @@ uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:27b*.json
 
 echo -e "\n📊 Evaluating Q2 Gemma 3 1B results..."
 uv run run_evaluation.py --results-path results/q2-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q3 Zero-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q3-zero-shot-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q3 Few-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q3-few-shot-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q4 Few-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q4-few-shot-1-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q4 Few-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q4-few-shot-3-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q4 Few-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q4-few-shot-5-gemma3:1b*.json
+
+echo -e "\n📊 Evaluating Q4 Few-shot Gemma 3 1B results..."
+uv run run_evaluation.py --results-path results/q4-few-shot-7-gemma3:1b*.json
 
 echo -e "\n📊 Running Final Analysis"
 echo "========================"

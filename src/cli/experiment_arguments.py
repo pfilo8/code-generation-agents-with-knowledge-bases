@@ -61,4 +61,11 @@ def parse_experiment_arguments() -> argparse.Namespace:
         help="Number of iterations for repetition experiments (default: 1)",
     )
 
+    parser.add_argument(
+        "--num-few-shot-examples",
+        type=int,
+        default=3,
+        help="Number of examples to use in few-shot experiments (default: 3)",
+    )
+
     return parser.parse_args()

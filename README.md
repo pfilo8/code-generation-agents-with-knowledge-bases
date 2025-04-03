@@ -56,10 +56,21 @@ We evaluated result stability by generating 5 different responses for each query
 
 Our analysis shows that results stabilize after 2-3 iterations, informing our experimental design choices. For subsequent experiments, we standardized on 3 iterations to ensure result comparability.
 
-### Q3: Few-Shot Approach Improvements
-Note: This section will be populated with results from the few-shot experiments currently in progress.
+### Q3: Zero-Shot vs. Few-Shot Comparison
+We analyze the impact of providing examples for the model into the prompt. For that purpose we evaluate the zero-shot approach and few-shot approach with 3 examples. Both experiments are calculated three times and we calculate accuracy based on the information whether any of the model trials for each task was successful.
+
+![Zero-Shot vs. Few-Shot Comparison](figures/Q3_few_shot_improvement.png)
+
+We can observe that the results for the provided runs were significantly improved. However, it's worth noting that the results of zero-shot approach are significantly lower than usual, e.g., presented in Q1 and Q2 results.
+
 
 ### Q4: Impact of Example Count in Few-Shot Learning
+In this section, we analyze the impact of number of examples to the model performance in a few-shot scenario. The methodology is similar to previous research questions, i.e., 3 runs with the accuracy at any successful attempt.
+
+![Impact of Example Count in Few-Shot Learning](figures/Q4_few_shot_number_of_examples.png)
+
+We can observe that increasing number of examples in the few-shot scenario has a significant impact on the model performance. What is worrying regarding the results is the fact that model in the 7-shot approach is not performing better than 3-shot approach in the Q3. Moreover, we can observe the significant gap between results for 3-shot approach between Q3 and Q4 which might be a result of the significant randomness in the model generation capabilities.
+
 Note: This section will be populated with results analyzing how the number of examples affects few-shot performance.
 
 ### Q5: Example Selection Strategies
@@ -107,6 +118,16 @@ uv run run_experiments.py --experiment_type zero-shot --experiment_name q1-zero-
 
 # Stability analysis
 uv run run_experiments.py --experiment_type zero-shot --experiment_name q2-gemma3:1b --model_name gemma3:1b --num-iterations 5
+
+# Zero-shot vs. Few-shot Comparison
+uv run run_experiments.py --experiment_type zero-shot --experiment_name q3-zero-shot-gemma3:1b --model_name gemma3:1b --num-iterations 3
+uv run run_experiments.py --experiment_type few-shot --experiment_name q3-few-shot-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 3
+
+# Few-shot Number of Examples Analysis
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-1-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 1
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-3-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 3
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-5-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 5
+uv run run_experiments.py --experiment_type few-shot --experiment_name q4-few-shot-7-gemma3:1b --model_name gemma3:1b --num-iterations 3 --num-few-shot-examples 7
 ```
 
 ### Evaluation
@@ -120,6 +141,14 @@ uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:12b*.json
 uv run run_evaluation.py --results-path results/q1-zero-shot-gemma3:27b*.json
 
 uv run run_evaluation.py --results-path results/q2-gemma3:1b*.json
+
+uv run run_evaluation.py --results-path results/q3-zero-shot-gemma3:1b*.json
+uv run run_evaluation.py --results-path results/q3-few-shot-gemma3:1b*.json
+
+uv run run_evaluation.py --results-path results/q4-few-shot-1-gemma3:1b*.json
+uv run run_evaluation.py --results-path results/q4-few-shot-3-gemma3:1b*.json
+uv run run_evaluation.py --results-path results/q4-few-shot-5-gemma3:1b*.json
+uv run run_evaluation.py --results-path results/q4-few-shot-7-gemma3:1b*.json
 ```
 
 Generate visualizations:

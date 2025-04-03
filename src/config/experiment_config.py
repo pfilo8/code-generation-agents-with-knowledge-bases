@@ -18,6 +18,7 @@ class ExperimentConfig:
     experiment_name: str = field(default="experiment")
     experiment_type: str = field(default="zero-shot")
     num_iterations: int = field(default=1)
+    num_few_shot_examples: int = field(default=0)
     output_dir: Path = field(default=Path("results"))
     test_range: Tuple[int, int] = FEW_SHOT_RANGE
     experiment_additional_arguments: dict = field(default_factory=dict)
@@ -37,6 +38,7 @@ class ExperimentConfig:
                 "experiment_type",
                 "output_dir",
                 "num_iterations",
+                "num_few_shot_examples",
             ]
             and v is not None
         }
@@ -47,6 +49,7 @@ class ExperimentConfig:
             experiment_type=args.experiment_type,
             experiment_name=args.experiment_name,
             num_iterations=args.num_iterations,
+            num_few_shot_examples=args.num_few_shot_examples,
             output_dir=args.output_dir,
             test_range=cls.TEST_RANGE,
             experiment_additional_arguments=additional_args,
