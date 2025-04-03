@@ -10,7 +10,7 @@ from src.experiment.utils import extract_code
 
 class ReflectorExperiment(BaseExperiment):
     def generate_reflection_about_task(self, task: str, test_list: list[str]) -> str:
-        """Generate code using the configured model."""
+        """Generate reflection based on the task and test cases."""
         try:
             response = ollama.generate(
                 model="gemma3:12b",
@@ -85,8 +85,12 @@ class ReflectorExperiment(BaseExperiment):
 
                 prompt += "\n<TASK>\n"
                 prompt += f"{ex['prompt']}"
-                prompt += "\n<TEST>"
+                prompt += "\n<TEST>\n"
                 prompt += "\n".join(ex["test_list"])
+                prompt += "\n<REFLECTION>\n"
+                prompt += self.generate_reflection_about_task(
+                    ex["prompt"], ex["test_list"]
+                )
                 prompt += "\n<SOLUTION>\n"
                 prompt += ex["code"]
                 prompt += "\n\n"
@@ -100,7 +104,7 @@ class ReflectorExperiment(BaseExperiment):
                     f"Reached end of available examples at task_id {current_task_id - 1}"
                 )
 
-            prompt += "Now is your turn to solve the next task. Remember to solve only this task.\n\n"
+            prompt += "Now is your turn to solve the next task. Remember to solve only this task and use the reflection.\n\n"
 
         return (
             prompt
