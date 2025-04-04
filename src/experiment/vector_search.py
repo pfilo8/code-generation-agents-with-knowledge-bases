@@ -1,11 +1,11 @@
+import logging
+import pathlib
+import pickle
+from dataclasses import asdict, dataclass
 from typing import Dict, List, Optional
+
 import numpy as np
 from sentence_transformers import SentenceTransformer
-import logging
-import json
-import pathlib
-from dataclasses import dataclass, asdict
-import pickle
 
 
 @dataclass
@@ -36,7 +36,7 @@ class VectorSearch:
         )
         self.embeddings_cache: Dict[int, CachedEmbedding] = {}
         self._load_cache()
-        
+
         # Precompute embeddings if training examples are provided
         if training_examples:
             self.precompute_embeddings(training_examples)
